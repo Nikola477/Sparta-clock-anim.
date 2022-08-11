@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clock</title>
+    <style>
+#clock{
+margin-left: 35rem;
+margin-top: 6rem;
+position: absolute;
+}
+#sparta {
+    display: none;
+    position: relative;
+}
+
+    
+    </style>
+</head>
+<body>
+
+  
+    <img id="sparta" 
+src="sparta.jpg" alt="This is Sparta!">
+    
+    
+<canvas id='clock' width='400' height=400 >
+    
+    
+    
+</canvas>
+
+<script>
+var canvas = document.getElementById("clock");       
+var ctx = clock.getContext("2d");
+var radius = clock.height / 2;                             // poluprecnik i trasnformacija
+ctx.translate(radius, radius);               
+radius = radius * 0.90;                     
+setInterval(glavniSat, 1000);             
+
+
+
+   //glavna funkcija gde ce biti izradjen sat
+   
+function glavniSat() {
+ctx.beginPath();
+ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+ctx.stroke();
+ctx.clip();
+
+
+glavnaTacka(ctx , radius);
+brojevi(ctx, radius);
+vreme(ctx, radius);
+
+}
+
+function glavnaTacka(ctx , radius) {       
+ 
+    var img = document.getElementById("sparta");     //dodavanje slike i njeno pozicioniranje unutar canvas elementa
+    ctx.beginPath();
+   ctx.drawImage(img, -radius + 5, -radius + 5);
+
+  ctx.beginPath();
+  ctx.arc(0, 0, radius*0.05, 0, 2*Math.PI);      // kreiranje male crne tacke na sredini
+  ctx.fillStyle = 'black';
+  ctx.fill();
+  ctx.globalCompositeOperation='destination-over';
+  
+}
+
+function brojevi() {
+  var ugao;
+  var num;
+  ctx.font = radius*0.15 + "px arial";  
+  ctx.textBaseline="middle";
+  ctx.textAlign="center";
+  for(num = 0; num < 13; num++){     //kreiranje brojeva na satu i njihovo pomeranje
+    ugao = num * Math.PI / 6;
+    ctx.rotate(ugao);
+    ctx.translate(0, -radius*0.75);
+    ctx.rotate(-ugao);
+    ctx.fillText(num.toString(), 0, 0);
+    ctx.rotate(ugao);
+    ctx.translate(0, radius*0.75);
+    ctx.rotate(-ugao);
+    ctx.globalCompositeOperation = "source-over";
+    
+   
+}
+
+}
+function iscrtavanjeKazaljki(ctx, pos, length, width) {           // izrada kazaljki
+    ctx.beginPath();
+    ctx.lineWidth = width;
+    ctx.lineCap = "round";
+    ctx.moveTo(0,0);
+    ctx.rotate(pos);
+    ctx.lineTo(0, -length);
+    ctx.stroke();
+    ctx.rotate(-pos);
+    ctx.globalCompositeOperation = "source-over";
+    
+}
+
+
+function vreme(ctx, radius){             //kreiranje tacnog vremena
+    var trenutnoVreme = new Date();
+    var cas = trenutnoVreme.getHours();
+    var minuta = trenutnoVreme.getMinutes();
+    var sekunda = trenutnoVreme.getSeconds();
+                                                          //pozicioniranje svih kazaljki posebno u odnosu na preuzeto vreme 
+    cas = cas%12;
+    cas = (cas*Math.PI/6)+(minuta*Math.PI/(6*60)) + (sekunda*Math.PI/(360*60));   
+    iscrtavanjeKazaljki(ctx, cas, radius*0.4, radius*0.06);
+    
+    minuta = (minuta*Math.PI/30) + (sekunda*Math.PI/(30*60));
+    iscrtavanjeKazaljki(ctx, minuta, radius*0.6, radius*0.04);
+    
+    sekunda = (sekunda*Math.PI/30);
+    iscrtavanjeKazaljki(ctx, sekunda, radius*0.7, radius*0.02);
+    
+   
+}
+
+
+
+
+
+</script>
+
+
+
+
+</body>
+</html>
